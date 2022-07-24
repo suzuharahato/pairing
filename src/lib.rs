@@ -1,4 +1,3 @@
-#![feature(asm)]
 #![feature(asm_const)]
 
 #[macro_use]
@@ -24,4 +23,12 @@ pub fn prefetch<T>(data: &[T], offset: usize) {
             core::arch::x86_64::_MM_HINT_T0,
         );
     }
+}
+
+#[cfg(feature = "gpu")]
+fn u64_to_u32(limbs: &[u64]) -> Vec<u32> {
+    limbs
+        .iter()
+        .flat_map(|limb| vec![(limb & 0xFFFF_FFFF) as u32, (limb >> 32) as u32])
+        .collect()
 }
